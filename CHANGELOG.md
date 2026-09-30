@@ -1,3 +1,12 @@
+## [0.5.21] — 2026-09-30
+
+### Changes
+
+```
+(no API-level changes detected — SDK regeneration only)
+```
+
+
 ## [0.5.20] — 2026-09-21
 
 ### Changes
