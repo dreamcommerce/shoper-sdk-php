@@ -4,7 +4,8 @@ namespace Shoper\Sdk\Rest\Specialoffers;
 
 use Psr\Http\Client\ClientInterface;
 use Shoper\Sdk\Rest\Core\Client\RawClient;
-use Shoper\Sdk\Rest\Types\Specialoffer;
+use Shoper\Sdk\Rest\Specialoffers\Requests\ListSpecialoffersRequest;
+use Shoper\Sdk\Rest\Specialoffers\Types\ListSpecialoffersResponse;
 use Shoper\Sdk\Rest\Exceptions\ShoperException;
 use Shoper\Sdk\Rest\Exceptions\ShoperApiException;
 use Shoper\Sdk\Rest\Core\Json\JsonApiRequest;
@@ -13,6 +14,7 @@ use Shoper\Sdk\Rest\Core\Client\HttpMethod;
 use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Shoper\Sdk\Rest\Specialoffers\Requests\SpecialofferInsert;
+use Shoper\Sdk\Rest\Types\Specialoffer;
 use Shoper\Sdk\Rest\Core\Json\JsonDecoder;
 use Shoper\Sdk\Rest\Core\Types\Union;
 use Shoper\Sdk\Rest\Specialoffers\Requests\SpecialofferUpdate;
@@ -54,6 +56,7 @@ class SpecialoffersClient
     }
 
     /**
+     * @param ListSpecialoffersRequest $request
      * @param ?array{
      *   baseUrl?: string,
      *   maxRetries?: int,
@@ -62,19 +65,33 @@ class SpecialoffersClient
      *   queryParameters?: array<string, mixed>,
      *   bodyProperties?: array<string, mixed>,
      * } $options
-     * @return ?Specialoffer
+     * @return ?ListSpecialoffersResponse
      * @throws ShoperException
      * @throws ShoperApiException
      */
-    public function get(?array $options = null): ?Specialoffer
+    public function list(ListSpecialoffersRequest $request = new ListSpecialoffersRequest(), ?array $options = null): ?ListSpecialoffersResponse
     {
         $options = array_merge($this->options, $options ?? []);
+        $query = [];
+        if ($request->limit != null) {
+            $query['limit'] = $request->limit;
+        }
+        if ($request->page != null) {
+            $query['page'] = $request->page;
+        }
+        if ($request->filtersProductId != null) {
+            $query['filters[product_id]'] = $request->filtersProductId;
+        }
+        if ($request->filtersStockId != null) {
+            $query['filters[stock_id]'] = $request->filtersStockId;
+        }
         try {
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
                     path: "webapi/rest/specialoffers",
                     method: HttpMethod::GET,
+                    query: $query,
                 ),
                 $options,
             );
@@ -84,7 +101,7 @@ class SpecialoffersClient
                 if (empty($json)) {
                     return null;
                 }
-                return Specialoffer::fromJson($json);
+                return ListSpecialoffersResponse::fromJson($json);
             }
         } catch (JsonException $e) {
             throw new ShoperException(message: "Failed to deserialize response: {$e->getMessage()}", previous: $e);
@@ -149,6 +166,7 @@ class SpecialoffersClient
     }
 
     /**
+     * @param string $id Resource identifier.
      * @param ?array{
      *   baseUrl?: string,
      *   maxRetries?: int,
@@ -157,19 +175,19 @@ class SpecialoffersClient
      *   queryParameters?: array<string, mixed>,
      *   bodyProperties?: array<string, mixed>,
      * } $options
-     * @return ?int
+     * @return ?Specialoffer
      * @throws ShoperException
      * @throws ShoperApiException
      */
-    public function delete(?array $options = null): ?int
+    public function get(string $id, ?array $options = null): ?Specialoffer
     {
         $options = array_merge($this->options, $options ?? []);
         try {
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/specialoffers",
-                    method: HttpMethod::DELETE,
+                    path: "webapi/rest/specialoffers/{$id}",
+                    method: HttpMethod::GET,
                 ),
                 $options,
             );
@@ -179,7 +197,7 @@ class SpecialoffersClient
                 if (empty($json)) {
                     return null;
                 }
-                return JsonDecoder::decodeInt($json);
+                return Specialoffer::fromJson($json);
             }
         } catch (JsonException $e) {
             throw new ShoperException(message: "Failed to deserialize response: {$e->getMessage()}", previous: $e);
@@ -231,6 +249,52 @@ class SpecialoffersClient
                     return null;
                 }
                 return JsonDecoder::decodeUnion($json, new Union('integer', Specialoffer::class)); // @phpstan-ignore-line
+            }
+        } catch (JsonException $e) {
+            throw new ShoperException(message: "Failed to deserialize response: {$e->getMessage()}", previous: $e);
+        } catch (ClientExceptionInterface $e) {
+            throw new ShoperException(message: $e->getMessage(), previous: $e);
+        }
+        throw new ShoperApiException(
+            message: 'API request failed',
+            statusCode: $statusCode,
+            body: $response->getBody()->getContents(),
+        );
+    }
+
+    /**
+     * @param string $id Resource identifier.
+     * @param ?array{
+     *   baseUrl?: string,
+     *   maxRetries?: int,
+     *   timeout?: float,
+     *   headers?: array<string, string>,
+     *   queryParameters?: array<string, mixed>,
+     *   bodyProperties?: array<string, mixed>,
+     * } $options
+     * @return ?int
+     * @throws ShoperException
+     * @throws ShoperApiException
+     */
+    public function delete(string $id, ?array $options = null): ?int
+    {
+        $options = array_merge($this->options, $options ?? []);
+        try {
+            $response = $this->client->sendRequest(
+                new JsonApiRequest(
+                    baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
+                    path: "webapi/rest/specialoffers/{$id}",
+                    method: HttpMethod::DELETE,
+                ),
+                $options,
+            );
+            $statusCode = $response->getStatusCode();
+            if ($statusCode >= 200 && $statusCode < 400) {
+                $json = $response->getBody()->getContents();
+                if (empty($json)) {
+                    return null;
+                }
+                return JsonDecoder::decodeInt($json);
             }
         } catch (JsonException $e) {
             throw new ShoperException(message: "Failed to deserialize response: {$e->getMessage()}", previous: $e);

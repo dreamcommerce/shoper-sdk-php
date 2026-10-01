@@ -57,6 +57,16 @@ class ListOrdersRequest extends JsonSerializableType
     public ?string $filtersAdditionalFields;
 
     /**
+     * @var ?int $filtersTags Filter by order tag identifiers. Supports operators: in, not_in.
+     */
+    public ?int $filtersTags;
+
+    /**
+     * @var ?int $filtersTagId Filter by order tag identifier. Supports operators: eq, in, not_in.
+     */
+    public ?int $filtersTagId;
+
+    /**
      * @param array{
      *   limit?: ?int,
      *   page?: ?int,
@@ -68,6 +78,8 @@ class ListOrdersRequest extends JsonSerializableType
      *   filtersTotalProducts?: ?int,
      *   filtersTotalParcels?: ?int,
      *   filtersAdditionalFields?: ?string,
+     *   filtersTags?: ?int,
+     *   filtersTagId?: ?int,
      * } $values
      */
     public function __construct(
@@ -83,5 +95,7 @@ class ListOrdersRequest extends JsonSerializableType
         $this->filtersTotalProducts = $values['filtersTotalProducts'] ?? null;
         $this->filtersTotalParcels = $values['filtersTotalParcels'] ?? null;
         $this->filtersAdditionalFields = $values['filtersAdditionalFields'] ?? null;
+        $this->filtersTags = $values['filtersTags'] ?? null;
+        $this->filtersTagId = $values['filtersTagId'] ?? null;
     }
 }

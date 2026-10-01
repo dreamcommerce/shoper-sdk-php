@@ -79,6 +79,15 @@ class NewsClient
         if ($request->page != null) {
             $query['page'] = $request->page;
         }
+        if ($request->filtersTag != null) {
+            $query['filters[tag]'] = $request->filtersTag;
+        }
+        if ($request->filtersTagId != null) {
+            $query['filters[tag_id]'] = $request->filtersTagId;
+        }
+        if ($request->filtersCategoryId != null) {
+            $query['filters[category_id]'] = $request->filtersCategoryId;
+        }
         try {
             $response = $this->client->sendRequest(
                 new JsonApiRequest(

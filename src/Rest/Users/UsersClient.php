@@ -109,6 +109,9 @@ class UsersClient
         if ($request->filtersTags != null) {
             $query['filters[tags]'] = $request->filtersTags;
         }
+        if ($request->filtersTagId != null) {
+            $query['filters[tag_id]'] = $request->filtersTagId;
+        }
         try {
             $response = $this->client->sendRequest(
                 new JsonApiRequest(

@@ -103,6 +103,12 @@ class OrdersClient
         if ($request->filtersAdditionalFields != null) {
             $query['filters[additional_fields]'] = $request->filtersAdditionalFields;
         }
+        if ($request->filtersTags != null) {
+            $query['filters[tags]'] = $request->filtersTags;
+        }
+        if ($request->filtersTagId != null) {
+            $query['filters[tag_id]'] = $request->filtersTagId;
+        }
         try {
             $response = $this->client->sendRequest(
                 new JsonApiRequest(

@@ -62,9 +62,14 @@ class ListUsersRequest extends JsonSerializableType
     public ?string $filtersAdditionalFields;
 
     /**
-     * @var ?string $filtersTags Filter by tags. Supports operators: eq.
+     * @var ?int $filtersTags Filter by user tag identifiers. Supports operators: in, not_in.
      */
-    public ?string $filtersTags;
+    public ?int $filtersTags;
+
+    /**
+     * @var ?int $filtersTagId Filter by user tag identifier. Supports operators: eq, in, not_in.
+     */
+    public ?int $filtersTagId;
 
     /**
      * @param array{
@@ -79,7 +84,8 @@ class ListUsersRequest extends JsonSerializableType
      *   filtersLangId?: ?int,
      *   filtersGroupId?: ?int,
      *   filtersAdditionalFields?: ?string,
-     *   filtersTags?: ?string,
+     *   filtersTags?: ?int,
+     *   filtersTagId?: ?int,
      * } $values
      */
     public function __construct(
@@ -97,5 +103,6 @@ class ListUsersRequest extends JsonSerializableType
         $this->filtersGroupId = $values['filtersGroupId'] ?? null;
         $this->filtersAdditionalFields = $values['filtersAdditionalFields'] ?? null;
         $this->filtersTags = $values['filtersTags'] ?? null;
+        $this->filtersTagId = $values['filtersTagId'] ?? null;
     }
 }
