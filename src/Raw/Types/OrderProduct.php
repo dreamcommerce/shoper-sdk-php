@@ -68,6 +68,16 @@ class OrderProduct extends JsonSerializableType
     public ?string $id;
 
     /**
+     * Image set of the [product stock](#tag/ProductStocks) this line item points to, read from the stock record at
+     * the moment of the request. When the stock has no image, both entries point to the store placeholder image and
+     * `is_placeholder` is `true`. `null` when the line item is not linked to an existing stock.
+     *
+     * @var ?OrderProductImages $images
+     */
+    #[JsonProperty('images')]
+    public ?OrderProductImages $images;
+
+    /**
      * @var ?OrderProductLoyalty $loyalty an associative array with loyalty exchange data, null if not exchanged
      */
     #[JsonProperty('loyalty')]
@@ -182,6 +192,16 @@ class OrderProduct extends JsonSerializableType
     public ?int $unitId;
 
     /**
+     * Warehouse code of the [product stock](#tag/ProductStocks) this line item points to (the stock `warehouse`
+     * additional field), read at the moment of the request. Empty string when the field is not enabled, not set,
+     * or the line item is not linked to an existing stock.
+     *
+     * @var ?string $warehouseCode
+     */
+    #[JsonProperty('warehouse_code')]
+    public ?string $warehouseCode;
+
+    /**
      * @var ?array<string, OrderProductWarehousesValue> $warehouses if warehouses is enabled it represents source warehouses, shipping warehouses and quantities
      */
     #[JsonProperty('warehouses'), ArrayType(['string' => OrderProductWarehousesValue::class])]
@@ -207,6 +227,7 @@ class OrderProduct extends JsonSerializableType
      *   ean?: ?string,
      *   fileOptions?: ?array<OrderProductFileOptionsItem>,
      *   id?: ?string,
+     *   images?: ?OrderProductImages,
      *   loyalty?: ?OrderProductLoyalty,
      *   name?: ?string,
      *   option?: ?string,
@@ -219,6 +240,7 @@ class OrderProduct extends JsonSerializableType
      *   unit?: ?string,
      *   unitFp?: ?value-of<OrderProductUnitFp>,
      *   unitId?: ?int,
+     *   warehouseCode?: ?string,
      *   warehouses?: ?array<string, OrderProductWarehousesValue>,
      *   weight?: ?string,
      * } $values
@@ -234,6 +256,7 @@ class OrderProduct extends JsonSerializableType
         $this->ean = $values['ean'] ?? null;
         $this->fileOptions = $values['fileOptions'] ?? null;
         $this->id = $values['id'] ?? null;
+        $this->images = $values['images'] ?? null;
         $this->loyalty = $values['loyalty'] ?? null;
         $this->name = $values['name'] ?? null;
         $this->option = $values['option'] ?? null;
@@ -250,6 +273,7 @@ class OrderProduct extends JsonSerializableType
         $this->unit = $values['unit'] ?? null;
         $this->unitFp = $values['unitFp'] ?? null;
         $this->unitId = $values['unitId'] ?? null;
+        $this->warehouseCode = $values['warehouseCode'] ?? null;
         $this->warehouses = $values['warehouses'] ?? null;
         $this->weight = $values['weight'] ?? null;
     }
