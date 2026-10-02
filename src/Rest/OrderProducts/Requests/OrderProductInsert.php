@@ -6,6 +6,8 @@ use Shoper\Sdk\Rest\Core\Json\JsonSerializableType;
 use Shoper\Sdk\Rest\OrderProducts\Types\OrderProductInsertChildrenItem;
 use Shoper\Sdk\Rest\Core\Json\JsonProperty;
 use Shoper\Sdk\Rest\Core\Types\ArrayType;
+use Shoper\Sdk\Rest\OrderProducts\Types\OrderProductInsertSpecialOfferPrice;
+use Shoper\Sdk\Rest\OrderProducts\Types\OrderProductInsertUnitFp;
 use Shoper\Sdk\Rest\OrderProducts\Types\OrderProductInsertWarehousesValue;
 
 class OrderProductInsert extends JsonSerializableType
@@ -110,13 +112,15 @@ class OrderProductInsert extends JsonSerializableType
     public float $quantity;
 
     /**
-     * should price be affected by a special offer? - only if either `product_id`
-     * or `stock_id` is specified - defaults to <code>true</code>
+     * whether the price should be taken from an active special offer instead of the regular product price. Only
+     * has an effect when `product_id` or `stock_id` is supplied and `price` is not sent explicitly. Send
+     * <code>"1"</code> to opt in - omitting the key means the regular price is used. A JSON boolean is rejected
+     * with <code>400</code>.
      *
-     * @var ?bool $specialOfferPrice
+     * @var ?value-of<OrderProductInsertSpecialOfferPrice> $specialOfferPrice
      */
     #[JsonProperty('special_offer_price')]
-    public ?bool $specialOfferPrice;
+    public ?string $specialOfferPrice;
 
     /**
      * [product stock](#tag/ProductStocks) identifier. **Optional** - an alternative to `product_id` for pointing
@@ -159,12 +163,13 @@ class OrderProductInsert extends JsonSerializableType
 
     /**
      * determines if unit is floating point. Inherited from the product when `product_id` or `stock_id` is sent.
-     * For a free line item it is required together with `unit`, unless you send `unit_id`.
+     * For a free line item it is required together with `unit`, unless you send `unit_id`. Send <code>"0"</code>
+     * or <code>"1"</code>; a JSON boolean is rejected with <code>400</code>.
      *
-     * @var ?bool $unitFp
+     * @var ?value-of<OrderProductInsertUnitFp> $unitFp
      */
     #[JsonProperty('unit_fp')]
-    public ?bool $unitFp;
+    public ?string $unitFp;
 
     /**
      * [unit](#tag/Units) identifier. Sending it fills `unit` and `unit_fp` from that unit. For a free line item you
@@ -204,12 +209,12 @@ class OrderProductInsert extends JsonSerializableType
      *   pkwiu?: ?string,
      *   price?: ?float,
      *   productId?: ?int,
-     *   specialOfferPrice?: ?bool,
+     *   specialOfferPrice?: ?value-of<OrderProductInsertSpecialOfferPrice>,
      *   stockId?: ?int,
      *   tax?: ?string,
      *   taxValue?: ?float,
      *   unit?: ?string,
-     *   unitFp?: ?bool,
+     *   unitFp?: ?value-of<OrderProductInsertUnitFp>,
      *   unitId?: ?int,
      *   warehouses?: ?array<string, OrderProductInsertWarehousesValue>,
      *   weight?: ?float,

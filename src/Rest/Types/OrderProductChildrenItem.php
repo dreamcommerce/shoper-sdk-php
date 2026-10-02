@@ -48,6 +48,12 @@ class OrderProductChildrenItem extends JsonSerializableType
     public ?string $id;
 
     /**
+     * @var ?int $isDigital whether this bundle component points to a digital product
+     */
+    #[JsonProperty('is_digital')]
+    public ?int $isDigital;
+
+    /**
      * @var ?string $name product name
      */
     #[JsonProperty('name')]
@@ -146,6 +152,7 @@ class OrderProductChildrenItem extends JsonSerializableType
      *   discountPerc?: ?string,
      *   fileOptions?: ?array<OrderProductChildrenItemFileOptionsItem>,
      *   id?: ?string,
+     *   isDigital?: ?int,
      *   name?: ?string,
      *   option?: ?string,
      *   orderId?: ?string,
@@ -171,6 +178,7 @@ class OrderProductChildrenItem extends JsonSerializableType
         $this->discountPerc = $values['discountPerc'] ?? null;
         $this->fileOptions = $values['fileOptions'] ?? null;
         $this->id = $values['id'] ?? null;
+        $this->isDigital = $values['isDigital'] ?? null;
         $this->name = $values['name'] ?? null;
         $this->option = $values['option'] ?? null;
         $this->orderId = $values['orderId'] ?? null;

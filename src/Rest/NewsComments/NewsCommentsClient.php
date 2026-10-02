@@ -126,7 +126,7 @@ class NewsCommentsClient
      * @throws ShoperException
      * @throws ShoperApiException
      */
-    public function create(NewsCommentInsert $request = new NewsCommentInsert(), ?array $options = null): int|NewsComment|null
+    public function create(NewsCommentInsert $request, ?array $options = null): int|NewsComment|null
     {
         $options = array_merge($this->options, $options ?? []);
         try {

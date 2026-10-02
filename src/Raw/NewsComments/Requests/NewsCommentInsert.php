@@ -8,10 +8,13 @@ use Shoper\Sdk\Rest\Core\Json\JsonProperty;
 class NewsCommentInsert extends JsonSerializableType
 {
     /**
-     * @var ?string $content comment content
+     * comment content. **Required.** Leading and trailing whitespace is trimmed and the result must be between
+     * 1 and 5120 characters, so a blank string is rejected.
+     *
+     * @var string $content
      */
     #[JsonProperty('content')]
-    public ?string $content;
+    public string $content;
 
     /**
      * @var ?string $date creation date(format: YYYY-MM-dd HH:mm:ss)
@@ -20,25 +23,34 @@ class NewsCommentInsert extends JsonSerializableType
     public ?string $date;
 
     /**
-     * @var ?int $langId ID comment lang
+     * @var int $langId [language](#tag/Languages) identifier of the comment. **Required** and it must point to an existing locale.
      */
     #[JsonProperty('lang_id')]
-    public ?int $langId;
+    public int $langId;
 
     /**
-     * @var ?int $newsId ID news
+     * [news](#tag/News) identifier the comment is attached to. **Required** and it must point to an existing
+     * blog post.
+     *
+     * @var int $newsId
      */
     #[JsonProperty('news_id')]
-    public ?int $newsId;
+    public int $newsId;
 
     /**
-     * @var ?int $userId author user id
+     * author [user](#tag/Users) identifier. Optional - when omitted the comment is treated as anonymous and
+     * `user_name` becomes required. When supplied it must point to an existing customer account.
+     *
+     * @var ?int $userId
      */
     #[JsonProperty('user_id')]
     public ?int $userId;
 
     /**
-     * @var ?string $userName author user name
+     * author user name, up to 100 characters. **Required when `user_id` is not supplied** (or is empty);
+     * otherwise optional.
+     *
+     * @var ?string $userName
      */
     #[JsonProperty('user_name')]
     public ?string $userName;
@@ -51,22 +63,22 @@ class NewsCommentInsert extends JsonSerializableType
 
     /**
      * @param array{
-     *   content?: ?string,
+     *   content: string,
+     *   langId: int,
+     *   newsId: int,
      *   date?: ?string,
-     *   langId?: ?int,
-     *   newsId?: ?int,
      *   userId?: ?int,
      *   userName?: ?string,
      *   validated?: ?bool,
      * } $values
      */
     public function __construct(
-        array $values = [],
+        array $values,
     ) {
-        $this->content = $values['content'] ?? null;
+        $this->content = $values['content'];
         $this->date = $values['date'] ?? null;
-        $this->langId = $values['langId'] ?? null;
-        $this->newsId = $values['newsId'] ?? null;
+        $this->langId = $values['langId'];
+        $this->newsId = $values['newsId'];
         $this->userId = $values['userId'] ?? null;
         $this->userName = $values['userName'] ?? null;
         $this->validated = $values['validated'] ?? null;

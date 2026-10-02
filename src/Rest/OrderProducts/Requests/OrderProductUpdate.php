@@ -6,6 +6,8 @@ use Shoper\Sdk\Rest\Core\Json\JsonSerializableType;
 use Shoper\Sdk\Rest\OrderProducts\Types\OrderProductUpdateChildrenItem;
 use Shoper\Sdk\Rest\Core\Json\JsonProperty;
 use Shoper\Sdk\Rest\Core\Types\ArrayType;
+use Shoper\Sdk\Rest\OrderProducts\Types\OrderProductUpdateSpecialOfferPrice;
+use Shoper\Sdk\Rest\OrderProducts\Types\OrderProductUpdateUnitFp;
 use Shoper\Sdk\Rest\OrderProducts\Types\OrderProductUpdateWarehousesValue;
 
 class OrderProductUpdate extends JsonSerializableType
@@ -90,13 +92,14 @@ class OrderProductUpdate extends JsonSerializableType
     public ?float $quantity;
 
     /**
-     * should price be affected by a special offer? - only if either `product_id`
-     * or `stock_id` is specified - defaults to <code>true</code>
+     * accepted for backward compatibility but it has **no effect on update** - the price is resolved from the
+     * product only while the line item is being created. Sending it, on its own or together with `product_id`
+     * or `stock_id`, leaves the stored price unchanged. Use `price` to set a different amount.
      *
-     * @var ?bool $specialOfferPrice
+     * @var ?value-of<OrderProductUpdateSpecialOfferPrice> $specialOfferPrice
      */
     #[JsonProperty('special_offer_price')]
-    public ?bool $specialOfferPrice;
+    public ?string $specialOfferPrice;
 
     /**
      * [product stock](#tag/ProductStocks) identifier. **Ignored on update** - the product variant behind an existing
@@ -126,10 +129,13 @@ class OrderProductUpdate extends JsonSerializableType
     public ?string $unit;
 
     /**
-     * @var ?bool $unitFp determines if unit is floating point
+     * determines if unit is floating point. Optional - omitting it keeps the current value. Send
+     * <code>"0"</code> or <code>"1"</code>; a JSON boolean is rejected with <code>400</code>.
+     *
+     * @var ?value-of<OrderProductUpdateUnitFp> $unitFp
      */
     #[JsonProperty('unit_fp')]
-    public ?bool $unitFp;
+    public ?string $unitFp;
 
     /**
      * @var ?int $unitId [unit](#tag/Units) identifier
@@ -163,12 +169,12 @@ class OrderProductUpdate extends JsonSerializableType
      *   price?: ?float,
      *   productId?: ?int,
      *   quantity?: ?float,
-     *   specialOfferPrice?: ?bool,
+     *   specialOfferPrice?: ?value-of<OrderProductUpdateSpecialOfferPrice>,
      *   stockId?: ?int,
      *   tax?: ?string,
      *   taxValue?: ?float,
      *   unit?: ?string,
-     *   unitFp?: ?bool,
+     *   unitFp?: ?value-of<OrderProductUpdateUnitFp>,
      *   unitId?: ?int,
      *   warehouses?: ?array<string, OrderProductUpdateWarehousesValue>,
      *   weight?: ?float,

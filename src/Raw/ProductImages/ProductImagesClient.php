@@ -126,7 +126,7 @@ class ProductImagesClient
      * @throws ShoperException
      * @throws ShoperApiException
      */
-    public function create(ProductImageInsert $request = new ProductImageInsert(), ?array $options = null): int|ProductImage|null
+    public function create(ProductImageInsert $request, ?array $options = null): int|ProductImage|null
     {
         $options = array_merge($this->options, $options ?? []);
         try {

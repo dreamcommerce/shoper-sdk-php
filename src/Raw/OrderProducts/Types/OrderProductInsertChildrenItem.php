@@ -121,10 +121,10 @@ class OrderProductInsertChildrenItem extends JsonSerializableType
     public ?string $unit;
 
     /**
-     * @var ?bool $unitFp determines if unit is floating point
+     * @var ?value-of<OrderProductInsertChildrenItemUnitFp> $unitFp determines if unit is floating point
      */
     #[JsonProperty('unit_fp')]
-    public ?bool $unitFp;
+    public ?string $unitFp;
 
     /**
      * @var ?int $unitId [unit](#tag/Units) identifier
@@ -157,7 +157,7 @@ class OrderProductInsertChildrenItem extends JsonSerializableType
      *   taxValue?: ?float,
      *   textOptions?: ?array<OrderProductInsertChildrenItemTextOptionsItem>,
      *   unit?: ?string,
-     *   unitFp?: ?bool,
+     *   unitFp?: ?value-of<OrderProductInsertChildrenItemUnitFp>,
      *   unitId?: ?int,
      *   weight?: ?float,
      * } $values

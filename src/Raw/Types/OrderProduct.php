@@ -78,6 +78,15 @@ class OrderProduct extends JsonSerializableType
     public ?OrderProductImages $images;
 
     /**
+     * whether the line item points to a digital product. Returns <code>0</code> for a free line item and for one
+     * whose product no longer exists in the catalog, because the flag is read from the linked product.
+     *
+     * @var ?int $isDigital
+     */
+    #[JsonProperty('is_digital')]
+    public ?int $isDigital;
+
+    /**
      * @var ?OrderProductLoyalty $loyalty an associative array with loyalty exchange data, null if not exchanged
      */
     #[JsonProperty('loyalty')]
@@ -134,13 +143,14 @@ class OrderProduct extends JsonSerializableType
     public string $quantity;
 
     /**
-     * should price be affected by a special offer? - only if either `product_id`
-     * or `stock_id` is specified - defaults to <code>true</code>
+     * whether the price was taken from an active special offer instead of the regular product price when the
+     * line item was created. Write-only in practice - this resource does not return the flag, and it defaults to
+     * <code>"0"</code>, so a line item created without it carries the regular price.
      *
-     * @var ?bool $specialOfferPrice
+     * @var ?value-of<OrderProductSpecialOfferPrice> $specialOfferPrice
      */
     #[JsonProperty('special_offer_price')]
-    public ?bool $specialOfferPrice;
+    public ?string $specialOfferPrice;
 
     /**
      * [product stock](#tag/ProductStocks) identifier. Value <code>0</code> means the product has never existed
@@ -172,6 +182,15 @@ class OrderProduct extends JsonSerializableType
      */
     #[JsonProperty('text_options'), ArrayType([OrderProductTextOptionsItem::class])]
     public ?array $textOptions;
+
+    /**
+     * line item type: <code>0</code> - a regular product, <code>1</code> - a product bundle whose components are
+     * returned in the `children` array.
+     *
+     * @var ?value-of<OrderProductType> $type
+     */
+    #[JsonProperty('type')]
+    public ?string $type;
 
     /**
      * @var ?string $unit measurement unit
@@ -228,15 +247,17 @@ class OrderProduct extends JsonSerializableType
      *   fileOptions?: ?array<OrderProductFileOptionsItem>,
      *   id?: ?string,
      *   images?: ?OrderProductImages,
+     *   isDigital?: ?int,
      *   loyalty?: ?OrderProductLoyalty,
      *   name?: ?string,
      *   option?: ?string,
      *   price?: ?string,
-     *   specialOfferPrice?: ?bool,
+     *   specialOfferPrice?: ?value-of<OrderProductSpecialOfferPrice>,
      *   stockId?: ?string,
      *   tax?: ?string,
      *   taxValue?: ?string,
      *   textOptions?: ?array<OrderProductTextOptionsItem>,
+     *   type?: ?value-of<OrderProductType>,
      *   unit?: ?string,
      *   unitFp?: ?value-of<OrderProductUnitFp>,
      *   unitId?: ?int,
@@ -257,6 +278,7 @@ class OrderProduct extends JsonSerializableType
         $this->fileOptions = $values['fileOptions'] ?? null;
         $this->id = $values['id'] ?? null;
         $this->images = $values['images'] ?? null;
+        $this->isDigital = $values['isDigital'] ?? null;
         $this->loyalty = $values['loyalty'] ?? null;
         $this->name = $values['name'] ?? null;
         $this->option = $values['option'] ?? null;
@@ -270,6 +292,7 @@ class OrderProduct extends JsonSerializableType
         $this->tax = $values['tax'] ?? null;
         $this->taxValue = $values['taxValue'] ?? null;
         $this->textOptions = $values['textOptions'] ?? null;
+        $this->type = $values['type'] ?? null;
         $this->unit = $values['unit'] ?? null;
         $this->unitFp = $values['unitFp'] ?? null;
         $this->unitId = $values['unitId'] ?? null;
