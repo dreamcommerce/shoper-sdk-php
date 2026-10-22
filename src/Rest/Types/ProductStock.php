@@ -55,6 +55,48 @@ class ProductStock extends JsonSerializableType
     public ?string $code;
 
     /**
+     * @var ?string $compPrice calculated stock price (after applying the stock price calculation method)
+     */
+    #[JsonProperty('comp_price')]
+    public ?string $compPrice;
+
+    /**
+     * @var ?string $compPriceSpecial calculated second wholesale stock price
+     */
+    #[JsonProperty('comp_price_special')]
+    public ?string $compPriceSpecial;
+
+    /**
+     * @var ?string $compPriceWholesale calculated first wholesale stock price
+     */
+    #[JsonProperty('comp_price_wholesale')]
+    public ?string $compPriceWholesale;
+
+    /**
+     * @var ?string $compPromoPrice calculated stock price including the active special offer
+     */
+    #[JsonProperty('comp_promo_price')]
+    public ?string $compPromoPrice;
+
+    /**
+     * @var ?string $compPromoPriceSpecial calculated second wholesale stock price including the active special offer
+     */
+    #[JsonProperty('comp_promo_price_special')]
+    public ?string $compPromoPriceSpecial;
+
+    /**
+     * @var ?string $compPromoPriceWholesale calculated first wholesale stock price including the active special offer
+     */
+    #[JsonProperty('comp_promo_price_wholesale')]
+    public ?string $compPromoPriceWholesale;
+
+    /**
+     * @var ?string $compWeight calculated stock weight (after applying the stock weight calculation method)
+     */
+    #[JsonProperty('comp_weight')]
+    public ?string $compWeight;
+
+    /**
      * @var ?value-of<ProductStockDefault> $default should the stock be selected as default upon selection?
      */
     #[JsonProperty('default')]
@@ -113,10 +155,16 @@ class ProductStock extends JsonSerializableType
     public ?string $price;
 
     /**
-     * @var ?string $priceBuying wholesale price second basic stock type
+     * @var ?string $priceBuying buying price
      */
     #[JsonProperty('price_buying')]
     public ?string $priceBuying;
+
+    /**
+     * @var ?string $priceBuyingNet net buying price
+     */
+    #[JsonProperty('price_buying_net')]
+    public ?string $priceBuyingNet;
 
     /**
      * @var ?string $priceSpecial wholesale price second basic stock type
@@ -257,6 +305,13 @@ class ProductStock extends JsonSerializableType
      *   calculationUnitId?: ?int,
      *   calculationUnitRatio?: ?string,
      *   code?: ?string,
+     *   compPrice?: ?string,
+     *   compPriceSpecial?: ?string,
+     *   compPriceWholesale?: ?string,
+     *   compPromoPrice?: ?string,
+     *   compPromoPriceSpecial?: ?string,
+     *   compPromoPriceWholesale?: ?string,
+     *   compWeight?: ?string,
      *   default?: ?value-of<ProductStockDefault>,
      *   deliveryId?: ?string,
      *   ean?: ?string,
@@ -267,6 +322,7 @@ class ProductStock extends JsonSerializableType
      *   package?: ?string,
      *   price?: ?string,
      *   priceBuying?: ?string,
+     *   priceBuyingNet?: ?string,
      *   priceSpecial?: ?string,
      *   priceType?: ?string,
      *   priceTypeSpecial?: ?string,
@@ -295,6 +351,13 @@ class ProductStock extends JsonSerializableType
         $this->calculationUnitId = $values['calculationUnitId'] ?? null;
         $this->calculationUnitRatio = $values['calculationUnitRatio'] ?? null;
         $this->code = $values['code'] ?? null;
+        $this->compPrice = $values['compPrice'] ?? null;
+        $this->compPriceSpecial = $values['compPriceSpecial'] ?? null;
+        $this->compPriceWholesale = $values['compPriceWholesale'] ?? null;
+        $this->compPromoPrice = $values['compPromoPrice'] ?? null;
+        $this->compPromoPriceSpecial = $values['compPromoPriceSpecial'] ?? null;
+        $this->compPromoPriceWholesale = $values['compPromoPriceWholesale'] ?? null;
+        $this->compWeight = $values['compWeight'] ?? null;
         $this->default = $values['default'] ?? null;
         $this->deliveryId = $values['deliveryId'] ?? null;
         $this->ean = $values['ean'] ?? null;
@@ -305,6 +368,7 @@ class ProductStock extends JsonSerializableType
         $this->package = $values['package'] ?? null;
         $this->price = $values['price'] ?? null;
         $this->priceBuying = $values['priceBuying'] ?? null;
+        $this->priceBuyingNet = $values['priceBuyingNet'] ?? null;
         $this->priceSpecial = $values['priceSpecial'] ?? null;
         $this->priceType = $values['priceType'] ?? null;
         $this->priceTypeSpecial = $values['priceTypeSpecial'] ?? null;

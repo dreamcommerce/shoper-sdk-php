@@ -102,6 +102,18 @@ class ProductUpdateStock extends JsonSerializableType
     public ?float $price;
 
     /**
+     * @var ?float $priceBuying buying price
+     */
+    #[JsonProperty('price_buying')]
+    public ?float $priceBuying;
+
+    /**
+     * @var ?float $priceBuyingNet net buying price; saved only when the net buying price feature is enabled in the shop
+     */
+    #[JsonProperty('price_buying_net')]
+    public ?float $priceBuyingNet;
+
+    /**
      * @var ?float $priceSpecial wholesale price second basic stock type
      */
     #[JsonProperty('price_special')]
@@ -210,6 +222,8 @@ class ProductUpdateStock extends JsonSerializableType
      *   historicalLowestPrice?: ?float,
      *   package?: ?float,
      *   price?: ?float,
+     *   priceBuying?: ?float,
+     *   priceBuyingNet?: ?float,
      *   priceSpecial?: ?float,
      *   priceWholesale?: ?float,
      *   productId?: ?int,
@@ -244,6 +258,8 @@ class ProductUpdateStock extends JsonSerializableType
         $this->historicalLowestPrice = $values['historicalLowestPrice'] ?? null;
         $this->package = $values['package'] ?? null;
         $this->price = $values['price'] ?? null;
+        $this->priceBuying = $values['priceBuying'] ?? null;
+        $this->priceBuyingNet = $values['priceBuyingNet'] ?? null;
         $this->priceSpecial = $values['priceSpecial'] ?? null;
         $this->priceWholesale = $values['priceWholesale'] ?? null;
         $this->productId = $values['productId'] ?? null;

@@ -19,22 +19,22 @@ class Product extends JsonSerializableType
     public ?string $addDate;
 
     /**
-     * @var ?int $additionalBloz12 **Deprecated since 5.25.6.** product BLOZ12 code (if enabled in shop configuration files)
+     * @var ?string $additionalBloz12 **Deprecated since 5.25.6.** product BLOZ12 code (if enabled in shop configuration files)
      */
     #[JsonProperty('additional_bloz12')]
-    public ?int $additionalBloz12;
+    public ?string $additionalBloz12;
 
     /**
-     * @var ?int $additionalBloz7 **Deprecated since 5.25.6.** product BLOZ7 code (if enabled in shop configuration files)
+     * @var ?string $additionalBloz7 **Deprecated since 5.25.6.** product BLOZ7 code (if enabled in shop configuration files)
      */
     #[JsonProperty('additional_bloz7')]
-    public ?int $additionalBloz7;
+    public ?string $additionalBloz7;
 
     /**
-     * @var ?int $additionalCode39 **Deprecated since 5.25.6.** Code 39 code (if enabled in shop configuration files)
+     * @var ?string $additionalCode39 **Deprecated since 5.25.6.** Code 39 code (if enabled in shop configuration files)
      */
     #[JsonProperty('additional_code39')]
-    public ?int $additionalCode39;
+    public ?string $additionalCode39;
 
     /**
      * **Deprecated since 5.25.6.** product GTU code (if enabled in shop configuration files)
@@ -91,6 +91,17 @@ class Product extends JsonSerializableType
     public ?array $categories;
 
     /**
+     * one path per [category](#tag/Categories) the product is assigned to (the categories listed in `categories`);
+     * each path is a list of category identifiers ordered from the root category down to, and including, that
+     * category. Use it to check whether the product belongs to a category or any of its parent categories
+     * without fetching the category tree. Empty array when the product has no categories.
+     *
+     * @var ?array<array<int>> $categoryPaths
+     */
+    #[JsonProperty('category_paths'), ArrayType([['integer']])]
+    public ?array $categoryPaths;
+
+    /**
      * @var (
      *    string
      *   |int
@@ -106,16 +117,16 @@ class Product extends JsonSerializableType
     public ?int $categoryTreeId;
 
     /**
-     * @var ?ProductChildren $children an associative array with product bundle children info
+     * @var ?array<ProductChildrenItem> $children an array with product bundle components; returned only for bundles (product type 1)
      */
-    #[JsonProperty('children')]
-    public ?ProductChildren $children;
+    #[JsonProperty('children'), ArrayType([ProductChildrenItem::class])]
+    public ?array $children;
 
     /**
-     * @var string $code product code
+     * @var ?string $code product code (code of the base stock); null when the product has no base stock
      */
     #[JsonProperty('code')]
-    public string $code;
+    public ?string $code;
 
     /**
      * @var ?array<int> $collections an array of the collection identifiers to which the product belongs
@@ -148,7 +159,7 @@ class Product extends JsonSerializableType
     public ?string $dimensionW;
 
     /**
-     * @var ?string $ean product ean code
+     * @var ?string $ean product ean code (EAN of the base stock); null when the product has no base stock
      */
     #[JsonProperty('ean')]
     public ?string $ean;
@@ -194,6 +205,15 @@ class Product extends JsonSerializableType
     public ?bool $isProductOfDay;
 
     /**
+     * is product digital? <code>1</code> when at least one file for download (digital product file) is attached
+     * to the product, <code>0</code> otherwise.
+     *
+     * @var ?int $isDigital
+     */
+    #[JsonProperty('is_digital')]
+    public ?int $isDigital;
+
+    /**
      * @var ?int $loyaltyPrice product price calculated to loyalty points
      */
     #[JsonProperty('loyalty_price')]
@@ -218,14 +238,8 @@ class Product extends JsonSerializableType
     public ?string $newproduct;
 
     /**
-     * Array of product option assignments.
-     *
-     * Behavior depends on option type:
-     * - **Options WITH children** (select/radio): returns ONLY active assigned values
-     *   (active=true). Inactive assignments are filtered out.
-     * - **Options WITHOUT children** (checkbox/text/file): always returns an entry
-     *   with `active=false` when no value is assigned, to signal the option exists
-     *   but has no assignment. Use `active=true` to filter actually-assigned ones.
+     * array of identifiers of the product's additional [stocks](#tag/ProductStocks) (variants defined by
+     * option values); the base stock is not included. Empty array when the product has no variants.
      *
      * @var ?array<int> $options
      */
@@ -293,10 +307,10 @@ class Product extends JsonSerializableType
     public ?ProductSpecialOffer $specialOffer;
 
     /**
-     * @var ProductStock $stock an associative array with base stock info
+     * @var ?ProductStock $stock an associative array with base stock info; null when the product has no base stock
      */
     #[JsonProperty('stock')]
-    public ProductStock $stock;
+    public ?ProductStock $stock;
 
     /**
      * @var ?int $tagId filter products by specific tag identifier(s)
@@ -358,13 +372,11 @@ class Product extends JsonSerializableType
      *    string
      *   |int
      * ),
-     *   code: string,
-     *   stock: ProductStock,
      *   translations: array<string, ProductTranslationsValue>,
      *   addDate?: ?string,
-     *   additionalBloz12?: ?int,
-     *   additionalBloz7?: ?int,
-     *   additionalCode39?: ?int,
+     *   additionalBloz12?: ?string,
+     *   additionalBloz7?: ?string,
+     *   additionalCode39?: ?string,
      *   additionalGtu?: ?string,
      *   additionalIsbn?: ?string,
      *   additionalKgo?: ?string,
@@ -373,8 +385,10 @@ class Product extends JsonSerializableType
      *   attributes?: ?array<string, mixed>,
      *   bestseller?: ?value-of<ProductBestseller>,
      *   categories?: ?array<int>,
+     *   categoryPaths?: ?array<array<int>>,
      *   categoryTreeId?: ?int,
-     *   children?: ?ProductChildren,
+     *   children?: ?array<ProductChildrenItem>,
+     *   code?: ?string,
      *   collections?: ?array<int>,
      *   currencyId?: ?string,
      *   dimensionH?: ?string,
@@ -387,6 +401,7 @@ class Product extends JsonSerializableType
      *   groupId?: ?string,
      *   inLoyalty?: ?value-of<ProductInLoyalty>,
      *   isProductOfDay?: ?bool,
+     *   isDigital?: ?int,
      *   loyaltyPrice?: ?int,
      *   loyaltyScore?: ?int,
      *   mainImage?: ?ProductMainImage,
@@ -401,6 +416,7 @@ class Product extends JsonSerializableType
      *   related?: ?array<int>,
      *   safetyInformation?: ?ProductSafetyInformation,
      *   specialOffer?: ?ProductSpecialOffer,
+     *   stock?: ?ProductStock,
      *   tagId?: ?int,
      *   tags?: ?array<int>,
      *   taxId?: ?string,
@@ -425,10 +441,11 @@ class Product extends JsonSerializableType
         $this->attributes = $values['attributes'] ?? null;
         $this->bestseller = $values['bestseller'] ?? null;
         $this->categories = $values['categories'] ?? null;
+        $this->categoryPaths = $values['categoryPaths'] ?? null;
         $this->categoryId = $values['categoryId'];
         $this->categoryTreeId = $values['categoryTreeId'] ?? null;
         $this->children = $values['children'] ?? null;
-        $this->code = $values['code'];
+        $this->code = $values['code'] ?? null;
         $this->collections = $values['collections'] ?? null;
         $this->currencyId = $values['currencyId'] ?? null;
         $this->dimensionH = $values['dimensionH'] ?? null;
@@ -441,6 +458,7 @@ class Product extends JsonSerializableType
         $this->groupId = $values['groupId'] ?? null;
         $this->inLoyalty = $values['inLoyalty'] ?? null;
         $this->isProductOfDay = $values['isProductOfDay'] ?? null;
+        $this->isDigital = $values['isDigital'] ?? null;
         $this->loyaltyPrice = $values['loyaltyPrice'] ?? null;
         $this->loyaltyScore = $values['loyaltyScore'] ?? null;
         $this->mainImage = $values['mainImage'] ?? null;
@@ -455,7 +473,7 @@ class Product extends JsonSerializableType
         $this->related = $values['related'] ?? null;
         $this->safetyInformation = $values['safetyInformation'] ?? null;
         $this->specialOffer = $values['specialOffer'] ?? null;
-        $this->stock = $values['stock'];
+        $this->stock = $values['stock'] ?? null;
         $this->tagId = $values['tagId'] ?? null;
         $this->tags = $values['tags'] ?? null;
         $this->taxId = $values['taxId'] ?? null;

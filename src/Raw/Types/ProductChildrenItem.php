@@ -5,10 +5,7 @@ namespace Shoper\Sdk\Rest\Types;
 use Shoper\Sdk\Rest\Core\Json\JsonSerializableType;
 use Shoper\Sdk\Rest\Core\Json\JsonProperty;
 
-/**
- * an associative array with product bundle children info
- */
-class ProductChildren extends JsonSerializableType
+class ProductChildrenItem extends JsonSerializableType
 {
     /**
      * @var ?int $bundleId product bundle identifier
@@ -35,7 +32,7 @@ class ProductChildren extends JsonSerializableType
     public ?string $productId;
 
     /**
-     * @var ?string $stock stock availability
+     * @var ?string $stock quantity of this component in a single bundle
      */
     #[JsonProperty('stock')]
     public ?string $stock;

@@ -20,6 +20,12 @@ class ProductTranslationsValue extends JsonSerializableType
     public ?string $description;
 
     /**
+     * @var ?string $booster additional search phrases (search booster) used by the shop search engine
+     */
+    #[JsonProperty('booster')]
+    public ?string $booster;
+
+    /**
      * @var ?value-of<ProductTranslationsValueIsdefault> $isdefault is product added during the install
      */
     #[JsonProperty('isdefault')]
@@ -107,6 +113,7 @@ class ProductTranslationsValue extends JsonSerializableType
      * @param array{
      *   active?: ?value-of<ProductTranslationsValueActive>,
      *   description?: ?string,
+     *   booster?: ?string,
      *   isdefault?: ?value-of<ProductTranslationsValueIsdefault>,
      *   langId?: ?string,
      *   mainPage?: ?value-of<ProductTranslationsValueMainPage>,
@@ -128,6 +135,7 @@ class ProductTranslationsValue extends JsonSerializableType
     ) {
         $this->active = $values['active'] ?? null;
         $this->description = $values['description'] ?? null;
+        $this->booster = $values['booster'] ?? null;
         $this->isdefault = $values['isdefault'] ?? null;
         $this->langId = $values['langId'] ?? null;
         $this->mainPage = $values['mainPage'] ?? null;

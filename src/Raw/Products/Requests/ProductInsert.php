@@ -71,6 +71,12 @@ class ProductInsert extends JsonSerializableType
     public ?array $attributes;
 
     /**
+     * @var ?bool $bestseller is product marked as bestseller? Saved only when bestsellers are set manually in the shop configuration; otherwise ignored
+     */
+    #[JsonProperty('bestseller')]
+    public ?bool $bestseller;
+
+    /**
      * @var ?array<int> $categories an array of identifiers of [categories](#tag/Categories)
      */
     #[JsonProperty('categories'), ArrayType(['integer'])]
@@ -83,10 +89,14 @@ class ProductInsert extends JsonSerializableType
     public int $categoryId;
 
     /**
-     * @var string $code product code
+     * product code (code of the base stock), maximum 100 characters, must be unique in the shop.
+     * Required only when the shop is configured to require product codes; otherwise, when omitted on create,
+     * the code is generated automatically.
+     *
+     * @var ?string $code
      */
     #[JsonProperty('code')]
-    public string $code;
+    public ?string $code;
 
     /**
      * @var ?array<int> $collections an array of the collection identifiers to which the product belongs
@@ -125,10 +135,10 @@ class ProductInsert extends JsonSerializableType
     public ?string $ean;
 
     /**
-     * @var ?array<int> $feedsExludes array of product feed identifiers
+     * @var ?array<int> $feedsExcludes array of identifiers of XML product feeds the product is excluded from
      */
-    #[JsonProperty('feeds_exludes'), ArrayType(['integer'])]
-    public ?array $feedsExludes;
+    #[JsonProperty('feeds_excludes'), ArrayType(['integer'])]
+    public ?array $feedsExcludes;
 
     /**
      * @var ?int $gaugeId [gauge](#tag/Gauges) identifier
@@ -137,10 +147,22 @@ class ProductInsert extends JsonSerializableType
     public ?int $gaugeId;
 
     /**
+     * @var ?int $groupId [option group](#tag/OptionGroups) identifier the product is bound to; <code>0</code> or empty unbinds the product from the group
+     */
+    #[JsonProperty('group_id')]
+    public ?int $groupId;
+
+    /**
      * @var ?bool $isProductOfDay is product a product of the day?
      */
     #[JsonProperty('is_product_of_day')]
     public ?bool $isProductOfDay;
+
+    /**
+     * @var ?bool $newproduct is product marked as new? Saved only when new products are set manually in the shop configuration; otherwise ignored
+     */
+    #[JsonProperty('newproduct')]
+    public ?bool $newproduct;
 
     /**
      * @var ?array<string> $options an associative array (keys: product feed identifiers, values: boolean)
@@ -203,16 +225,16 @@ class ProductInsert extends JsonSerializableType
     public ProductInsertStock $stock;
 
     /**
-     * @var ?int $tagId filter products by specific tag identifier(s)
-     */
-    #[JsonProperty('tag_id')]
-    public ?int $tagId;
-
-    /**
      * @var ?array<int> $tags array of tags identifiers
      */
     #[JsonProperty('tags'), ArrayType(['integer'])]
     public ?array $tags;
+
+    /**
+     * @var ?int $taxId [tax](#tag/Taxes) identifier; when omitted on create, the default tax rate of the shop is used
+     */
+    #[JsonProperty('tax_id')]
+    public ?int $taxId;
 
     /**
      * @var array<string, ProductInsertTranslationsValue> $translations an associative array with object translations; if you want to filter things - you can skip locale subkey
@@ -241,7 +263,6 @@ class ProductInsert extends JsonSerializableType
     /**
      * @param array{
      *   categoryId: int,
-     *   code: string,
      *   stock: ProductInsertStock,
      *   translations: array<string, ProductInsertTranslationsValue>,
      *   additionalBloz12?: ?int,
@@ -253,16 +274,20 @@ class ProductInsert extends JsonSerializableType
      *   additionalProducer?: ?string,
      *   additionalWarehouse?: ?string,
      *   attributes?: ?array<string, string>,
+     *   bestseller?: ?bool,
      *   categories?: ?array<int>,
+     *   code?: ?string,
      *   collections?: ?array<int>,
      *   currencyId?: ?int,
      *   dimensionH?: ?float,
      *   dimensionL?: ?float,
      *   dimensionW?: ?float,
      *   ean?: ?string,
-     *   feedsExludes?: ?array<int>,
+     *   feedsExcludes?: ?array<int>,
      *   gaugeId?: ?int,
+     *   groupId?: ?int,
      *   isProductOfDay?: ?bool,
+     *   newproduct?: ?bool,
      *   options?: ?array<string>,
      *   optionsNonStock?: ?array<ProductInsertOptionsNonStockItem>,
      *   otherPrice?: ?float,
@@ -271,8 +296,8 @@ class ProductInsert extends JsonSerializableType
      *   related?: ?array<int>,
      *   safetyInformation?: ?ProductInsertSafetyInformation,
      *   specialOffer?: ?ProductInsertSpecialOffer,
-     *   tagId?: ?int,
      *   tags?: ?array<int>,
+     *   taxId?: ?int,
      *   unitId?: ?int,
      *   unitPriceCalculation?: ?bool,
      *   volWeight?: ?float,
@@ -290,18 +315,21 @@ class ProductInsert extends JsonSerializableType
         $this->additionalProducer = $values['additionalProducer'] ?? null;
         $this->additionalWarehouse = $values['additionalWarehouse'] ?? null;
         $this->attributes = $values['attributes'] ?? null;
+        $this->bestseller = $values['bestseller'] ?? null;
         $this->categories = $values['categories'] ?? null;
         $this->categoryId = $values['categoryId'];
-        $this->code = $values['code'];
+        $this->code = $values['code'] ?? null;
         $this->collections = $values['collections'] ?? null;
         $this->currencyId = $values['currencyId'] ?? null;
         $this->dimensionH = $values['dimensionH'] ?? null;
         $this->dimensionL = $values['dimensionL'] ?? null;
         $this->dimensionW = $values['dimensionW'] ?? null;
         $this->ean = $values['ean'] ?? null;
-        $this->feedsExludes = $values['feedsExludes'] ?? null;
+        $this->feedsExcludes = $values['feedsExcludes'] ?? null;
         $this->gaugeId = $values['gaugeId'] ?? null;
+        $this->groupId = $values['groupId'] ?? null;
         $this->isProductOfDay = $values['isProductOfDay'] ?? null;
+        $this->newproduct = $values['newproduct'] ?? null;
         $this->options = $values['options'] ?? null;
         $this->optionsNonStock = $values['optionsNonStock'] ?? null;
         $this->otherPrice = $values['otherPrice'] ?? null;
@@ -311,8 +339,8 @@ class ProductInsert extends JsonSerializableType
         $this->safetyInformation = $values['safetyInformation'] ?? null;
         $this->specialOffer = $values['specialOffer'] ?? null;
         $this->stock = $values['stock'];
-        $this->tagId = $values['tagId'] ?? null;
         $this->tags = $values['tags'] ?? null;
+        $this->taxId = $values['taxId'] ?? null;
         $this->translations = $values['translations'];
         $this->unitId = $values['unitId'] ?? null;
         $this->unitPriceCalculation = $values['unitPriceCalculation'] ?? null;

@@ -11,22 +11,22 @@ use Shoper\Sdk\Rest\Core\Json\JsonProperty;
 class ProductStockAdditionalCodes extends JsonSerializableType
 {
     /**
-     * @var ?int $bloz12 BLOZ12 code (if enabled in shop configuration files)
+     * @var ?string $bloz12 BLOZ12 code (if enabled in shop configuration files)
      */
     #[JsonProperty('bloz12')]
-    public ?int $bloz12;
+    public ?string $bloz12;
 
     /**
-     * @var ?int $bloz7 BLOZ7 code (if enabled in shop configuration files)
+     * @var ?string $bloz7 BLOZ7 code (if enabled in shop configuration files)
      */
     #[JsonProperty('bloz7')]
-    public ?int $bloz7;
+    public ?string $bloz7;
 
     /**
-     * @var ?int $code39 Code 39 code (if enabled in shop configuration files)
+     * @var ?string $code39 Code 39 code (if enabled in shop configuration files)
      */
     #[JsonProperty('code39')]
-    public ?int $code39;
+    public ?string $code39;
 
     /**
      * GTU code (if enabled in shop configuration files)
@@ -63,9 +63,9 @@ class ProductStockAdditionalCodes extends JsonSerializableType
 
     /**
      * @param array{
-     *   bloz12?: ?int,
-     *   bloz7?: ?int,
-     *   code39?: ?int,
+     *   bloz12?: ?string,
+     *   bloz7?: ?string,
+     *   code39?: ?string,
      *   gtu?: ?string,
      *   isbn?: ?string,
      *   kgo?: ?string,
