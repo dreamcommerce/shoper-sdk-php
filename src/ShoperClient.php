@@ -56,6 +56,7 @@ use Shoper\Sdk\Rest\RestClient;
  * @method \Shoper\Sdk\Rest\OptionValues\OptionValuesClient optionValues()
  * @method \Shoper\Sdk\Rest\OrderProducts\OrderProductsClient orderProducts()
  * @method \Shoper\Sdk\Rest\OrderRefunds\OrderRefundsClient orderRefunds()
+ * @method \Shoper\Sdk\Rest\OrderReturns\OrderReturnsClient orderReturns()
  * @method \Shoper\Sdk\Rest\OrderTags\OrderTagsClient orderTags()
  * @method \Shoper\Sdk\Rest\OrderTransactions\OrderTransactionsClient orderTransactions()
  * @method \Shoper\Sdk\Rest\Orders\OrdersClient orders()
@@ -374,6 +375,11 @@ final class ShoperClient
     public function orderRefunds(): \Shoper\Sdk\Rest\OrderRefunds\OrderRefundsClient
     {
         return $this->raw()->orderRefunds;
+    }
+
+    public function orderReturns(): \Shoper\Sdk\Rest\OrderReturns\OrderReturnsClient
+    {
+        return $this->raw()->orderReturns;
     }
 
     public function orderTags(): \Shoper\Sdk\Rest\OrderTags\OrderTagsClient
