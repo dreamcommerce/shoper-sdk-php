@@ -36,14 +36,15 @@ if (!isset($_GET['code'])) {
 
 $expectedState = $_SESSION['shoper_oauth_state'] ?? null;
 unset($_SESSION['shoper_oauth_state']);
-if (!OAuthManager::verifyState($expectedState, $_GET['state'] ?? null)) {
+$receivedState = is_string($_GET['state'] ?? null) ? $_GET['state'] : null;
+if (!is_string($_GET['code']) || !OAuthManager::verifyState($expectedState, $receivedState)) {
     http_response_code(400);
     echo "Invalid OAuth state.\n";
     exit;
 }
 
 $client = new ShoperClient($shopDomain);
-$tokens = $client->authenticateOAuth($clientId, $clientSecret, (string) $_GET['code']);
+$tokens = $client->authenticateOAuth($clientId, $clientSecret, $_GET['code']);
 echo "Got tokens: access_token=" . substr($tokens['access_token'], 0, 10) . "..., expires_in={$tokens['expires_in']}\n";
 
 // Step 4: Make API calls.
