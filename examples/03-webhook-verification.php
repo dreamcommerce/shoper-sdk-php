@@ -13,15 +13,20 @@ $appstoreSecret = getenv('SHOPER_APPSTORE_SECRET');
 $webhookSecret = getenv('SHOPER_WEBHOOK_SECRET');
 
 $installedShops = ['shop-hash-1' => true];
-$seenDeliveries = [];
+$deliveryDir = sys_get_temp_dir() . '/shoper-webhook-deliveries';
+if (!is_dir($deliveryDir)) {
+    mkdir($deliveryDir, 0700, true);
+}
 
-$verifier = (new WebhookVerifier($appstoreSecret, $webhookSecret))
+$verifier = (new WebhookVerifier((string) $appstoreSecret, (string) $webhookSecret))
     ->withShopGuard(static fn (string $shopHash): bool => isset($installedShops[$shopHash]))
-    ->withReplayGuard(static function (string $deliveryId, int $timestamp) use (&$seenDeliveries): bool {
-        if (isset($seenDeliveries[$deliveryId])) {
+    ->withReplayGuard(static function (string $deliveryId, int $timestamp) use ($deliveryDir): bool {
+        $marker = @fopen($deliveryDir . '/' . hash('sha256', $deliveryId), 'x');
+        if ($marker === false) {
             return false;
         }
-        $seenDeliveries[$deliveryId] = $timestamp;
+        fwrite($marker, (string) $timestamp);
+        fclose($marker);
         return true;
     });
 

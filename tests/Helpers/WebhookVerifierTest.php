@@ -20,6 +20,14 @@ final class WebhookVerifierTest extends TestCase
         $this->verifier = new WebhookVerifier(self::APPSTORE_SECRET, self::WEBHOOK_SECRET);
     }
 
+    protected function tearDown(): void
+    {
+        foreach (['ID', 'SHA1', 'SIGNATURE', 'TIMESTAMP', 'DELIVERY_ID'] as $suffix) {
+            unset($_SERVER['HTTP_X_WEBHOOK_' . $suffix]);
+        }
+        unset($_SERVER['HTTP_X_SHOP_LICENSE']);
+    }
+
     public function test_deriveShopSecret_is_deterministic(): void
     {
         $a = $this->verifier->deriveShopSecret(self::SHOP_HASH);
@@ -154,6 +162,8 @@ final class WebhookVerifierTest extends TestCase
         self::assertFalse($v->verifySignature('1591', 's', $body, $sig, '1763550001', self::DID));
         self::assertFalse($v->verifySignature('1591', 's', $body, $sig, self::TS, 'other-id'));
         self::assertFalse($v->verifySignature('1592', 's', $body, $sig, self::TS, self::DID));
+        $newlineTs = self::TS . "\n";
+        self::assertFalse($v->verifySignature('1591', 's', $body, $this->sig('raw', '1591', $body, $newlineTs), $newlineTs, self::DID));
     }
 
     public function test_replay_guard(): void

@@ -137,7 +137,7 @@ final class WebhookVerifier
         string $timestamp,
         string $deliveryId
     ): bool {
-        if ($webhookId === '' || $deliveryId === '' || !preg_match('/^\d{1,12}$/', $timestamp)) {
+        if ($webhookId === '' || $deliveryId === '' || !preg_match('/^\d{1,12}\z/', $timestamp)) {
             return false;
         }
         if (strncmp($signature, self::SIGNATURE_PREFIX, strlen(self::SIGNATURE_PREFIX)) !== 0) {
