@@ -12,7 +12,18 @@ use Shoper\Sdk\WebhookVerifier;
 $appstoreSecret = getenv('SHOPER_APPSTORE_SECRET');
 $webhookSecret = getenv('SHOPER_WEBHOOK_SECRET');
 
-$verifier = new WebhookVerifier($appstoreSecret, $webhookSecret);
+$installedShops = ['shop-hash-1' => true];
+$seenDeliveries = [];
+
+$verifier = (new WebhookVerifier($appstoreSecret, $webhookSecret))
+    ->withShopGuard(static fn (string $shopHash): bool => isset($installedShops[$shopHash]))
+    ->withReplayGuard(static function (string $deliveryId, int $timestamp) use (&$seenDeliveries): bool {
+        if (isset($seenDeliveries[$deliveryId])) {
+            return false;
+        }
+        $seenDeliveries[$deliveryId] = $timestamp;
+        return true;
+    });
 
 $rawBody = file_get_contents('php://input');
 if (!$verifier->verifyFromGlobals($rawBody)) {

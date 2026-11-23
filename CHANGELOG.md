@@ -1,3 +1,14 @@
+## [Unreleased]
+
+### Added
+
+- `WebhookVerifier::fromShopSecret()`, `verifySignature()`, `verifyHeaders()`, `withTolerance()`, `withoutLegacySha1()`, `withReplayGuard()`, `withShopGuard()`, `withClock()`.
+- Support for `X-Webhook-Signature` (HMAC-SHA256 with timestamp and delivery id).
+
+### Security
+
+- `WebhookVerifier` rejects empty signatures, webhook ids and key material instead of comparing against a value derived from them.
+
 ## [0.5.27] — 2026-10-22
 
 ### Changes
