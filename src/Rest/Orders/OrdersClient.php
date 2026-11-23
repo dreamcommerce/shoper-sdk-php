@@ -210,7 +210,7 @@ class OrdersClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/orders/{$id}",
+                    path: 'webapi/rest/orders/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::GET,
                 ),
                 $options,
@@ -260,7 +260,7 @@ class OrdersClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/orders/{$id}",
+                    path: 'webapi/rest/orders/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::PUT,
                     body: $request,
                 ),
@@ -307,7 +307,7 @@ class OrdersClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/orders/{$id}",
+                    path: 'webapi/rest/orders/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::DELETE,
                 ),
                 $options,

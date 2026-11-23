@@ -180,7 +180,7 @@ class AdditionalFieldOptionsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/additional-field-options/{$id}",
+                    path: 'webapi/rest/additional-field-options/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::GET,
                 ),
                 $options,
@@ -230,7 +230,7 @@ class AdditionalFieldOptionsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/additional-field-options/{$id}",
+                    path: 'webapi/rest/additional-field-options/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::PUT,
                     body: $request,
                 ),
@@ -277,7 +277,7 @@ class AdditionalFieldOptionsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/additional-field-options/{$id}",
+                    path: 'webapi/rest/additional-field-options/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::DELETE,
                 ),
                 $options,

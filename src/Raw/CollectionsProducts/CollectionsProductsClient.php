@@ -83,7 +83,7 @@ class CollectionsProductsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/collections/{$collectionId}/products",
+                    path: 'webapi/rest/collections/' . \Shoper\Sdk\PathSegment::encode($collectionId) . '/products',
                     method: HttpMethod::GET,
                     query: $query,
                 ),
@@ -135,7 +135,7 @@ class CollectionsProductsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/collections/{$collectionId}/products/{$productId}",
+                    path: 'webapi/rest/collections/' . \Shoper\Sdk\PathSegment::encode($collectionId) . '/products/' . \Shoper\Sdk\PathSegment::encode($productId),
                     method: HttpMethod::PUT,
                     body: $request,
                 ),

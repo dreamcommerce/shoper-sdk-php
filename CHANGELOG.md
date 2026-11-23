@@ -1,3 +1,9 @@
+## [Unreleased]
+
+### Security
+- Path parameters (`$id`, `$object`, `$paymentId`, `$collectionId`, `$productId`) are now encoded as a single URL path segment by `Shoper\Sdk\PathSegment::encode()` (SHOPAPI-1067). Values such as `1/../../users` can no longer redirect a call to another API resource; they are sent as `1%2F..%2F..%2Fusers`. Empty, `.` and `..` values throw `InvalidArgumentException` before any request is sent.
+- Migration: code that appended path fragments or query strings to an identifier (for example `'5?x=1'`) must pass them through `$options['queryParameters']` instead.
+
 ## [0.5.27] — 2026-10-22
 
 ### Changes

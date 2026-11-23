@@ -180,7 +180,7 @@ class RedirectsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/redirects/{$id}",
+                    path: 'webapi/rest/redirects/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::GET,
                 ),
                 $options,
@@ -230,7 +230,7 @@ class RedirectsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/redirects/{$id}",
+                    path: 'webapi/rest/redirects/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::PUT,
                     body: $request,
                 ),
@@ -277,7 +277,7 @@ class RedirectsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/redirects/{$id}",
+                    path: 'webapi/rest/redirects/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::DELETE,
                 ),
                 $options,

@@ -186,7 +186,7 @@ class SpecialoffersClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/specialoffers/{$id}",
+                    path: 'webapi/rest/specialoffers/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::GET,
                 ),
                 $options,
@@ -236,7 +236,7 @@ class SpecialoffersClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/specialoffers/{$id}",
+                    path: 'webapi/rest/specialoffers/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::PUT,
                     body: $request,
                 ),
@@ -283,7 +283,7 @@ class SpecialoffersClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/specialoffers/{$id}",
+                    path: 'webapi/rest/specialoffers/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::DELETE,
                 ),
                 $options,

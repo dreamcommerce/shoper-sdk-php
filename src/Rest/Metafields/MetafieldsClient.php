@@ -84,7 +84,7 @@ class MetafieldsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/metafields/{$object}",
+                    path: 'webapi/rest/metafields/' . \Shoper\Sdk\PathSegment::encode($object),
                     method: HttpMethod::GET,
                     query: $query,
                 ),
@@ -135,7 +135,7 @@ class MetafieldsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/metafields/{$object}",
+                    path: 'webapi/rest/metafields/' . \Shoper\Sdk\PathSegment::encode($object),
                     method: HttpMethod::POST,
                     body: $request,
                 ),
@@ -183,7 +183,7 @@ class MetafieldsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/metafields/{$object}/{$id}",
+                    path: 'webapi/rest/metafields/' . \Shoper\Sdk\PathSegment::encode($object) . '/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::GET,
                 ),
                 $options,
@@ -234,7 +234,7 @@ class MetafieldsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/metafields/{$object}/{$id}",
+                    path: 'webapi/rest/metafields/' . \Shoper\Sdk\PathSegment::encode($object) . '/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::PUT,
                     body: $request,
                 ),
@@ -282,7 +282,7 @@ class MetafieldsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/metafields/{$object}/{$id}",
+                    path: 'webapi/rest/metafields/' . \Shoper\Sdk\PathSegment::encode($object) . '/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::DELETE,
                 ),
                 $options,

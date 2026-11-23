@@ -126,7 +126,7 @@ class GeolocationSubregionsClient
             $response = $this->client->sendRequest(
                 new JsonApiRequest(
                     baseUrl: $options['baseUrl'] ?? $this->client->options['baseUrl'] ?? Environments::Default_->value,
-                    path: "webapi/rest/geolocation-subregions/{$id}",
+                    path: 'webapi/rest/geolocation-subregions/' . \Shoper\Sdk\PathSegment::encode($id),
                     method: HttpMethod::GET,
                 ),
                 $options,

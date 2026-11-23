@@ -62,6 +62,10 @@ if (!$verifier->verifyFromGlobals(file_get_contents('php://input'))) {
 ```
 `verifyFromGlobals()` reads the `X-Webhook-Id`, `X-Shop-License` and `X-Webhook-SHA1` headers; `verifyFromPsr7($request)` does the same for a PSR-7 request. See `examples/03-webhook-verification.php`.
 
+### Path parameters
+
+Every identifier passed to a REST client method (`$client->products()->get($id)`) is encoded as a single URL path segment, so `1/../../users` cannot reach another resource. Empty, `.` and `..` identifiers throw `InvalidArgumentException`. `BulkRequestBuilder::add()` takes a ready-made path: the application is responsible for building it safely.
+
 ## All 74 sub-clients
 
 Every public REST resource is a typed getter on `ShoperClient`:
