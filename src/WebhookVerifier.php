@@ -128,6 +128,8 @@ final class WebhookVerifier
 
     /**
      * Verifies the X-Webhook-Signature header (HMAC-SHA256 over "timestamp.deliveryId.id:body").
+     * A delivery id containing "." or a webhook id containing ":" is rejected, so the signed
+     * string cannot be split into different fields.
      */
     public function verifySignature(
         string $webhookId,
@@ -138,6 +140,9 @@ final class WebhookVerifier
         string $deliveryId
     ): bool {
         if ($webhookId === '' || $deliveryId === '' || !preg_match('/^\d{1,12}\z/', $timestamp)) {
+            return false;
+        }
+        if (strpos($deliveryId, '.') !== false || strpos($webhookId, ':') !== false) {
             return false;
         }
         if (strncmp($signature, self::SIGNATURE_PREFIX, strlen(self::SIGNATURE_PREFIX)) !== 0) {

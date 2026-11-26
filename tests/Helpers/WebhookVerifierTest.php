@@ -166,6 +166,30 @@ final class WebhookVerifierTest extends TestCase
         self::assertFalse($v->verifySignature('1591', 's', $body, $this->sig('raw', '1591', $body, $newlineTs), $newlineTs, self::DID));
     }
 
+    public function test_verifySignature_rejects_fields_split_differently(): void
+    {
+        $body = '{"p":"1.5","q":2}';
+        $v = $this->clocked(WebhookVerifier::fromShopSecret('raw'));
+        $sig = $this->sig('raw', '1591', $body);
+        self::assertTrue($v->verifySignature('1591', 's', $body, $sig, self::TS, self::DID));
+        self::assertFalse($v->verifySignature('1591:{"p"', 's', '"1.5","q":2}', $sig, self::TS, self::DID));
+        self::assertFalse($v->verifySignature('5","q"', 's', '2}', $sig, self::TS, self::DID . '.1591:{"p":"1'));
+    }
+
+    public function test_signature_matches_shop_reference_vector(): void
+    {
+        $v = WebhookVerifier::fromShopSecret('abc')->withClock(static fn (): int => 1763550000);
+        $headers = [
+            'X-Webhook-Id' => '1591',
+            'X-Webhook-Timestamp' => '1763550000',
+            'X-Webhook-Delivery-Id' => '0b6f2d4e-1a3c-4b5d-8e7f-9a0b1c2d3e4f',
+            'X-Webhook-Signature' => 'sha256=5d9fbec9f7dae6f988436693004310edc65b3b9fdb3da380a49498a1233b8b84',
+            'X-Webhook-SHA1' => 'fb906a42c30971ecdfd1b4564046317e22fe739e',
+        ];
+        self::assertTrue($v->verifyHeaders($headers, '{"a":1}'));
+        self::assertTrue($v->verify('1591', '', '{"a":1}', $headers['X-Webhook-SHA1']));
+    }
+
     public function test_replay_guard(): void
     {
         $body = '{"a":1}';
@@ -248,10 +272,17 @@ final class WebhookVerifierTest extends TestCase
 
     public function test_withers_do_not_mutate_and_validate(): void
     {
-        $body = 'b';
-        $v = WebhookVerifier::fromShopSecret('raw');
+        $body = '{"a":1}';
+        $v = $this->clocked(WebhookVerifier::fromShopSecret('raw'));
         $v->withoutLegacySha1();
-        self::assertTrue($v->verify('1', 's', $body, sha1('1:raw:' . $body)));
+        $v->withShopGuard(static fn (): bool => false);
+        $v->withReplayGuard(static fn (): bool => false);
+        $v->withTolerance(600);
+        $v->withClock(static fn (): int => 1763550301);
+        $legacy = ['X-Webhook-Id' => '1591', 'X-Shop-License' => 's', 'X-Webhook-SHA1' => sha1('1591:raw:' . $body)];
+        self::assertTrue($v->verifyHeaders($legacy, $body));
+        self::assertTrue($v->verifySignature('1591', 's', $body, $this->sig('raw', '1591', $body), self::TS, self::DID));
+        self::assertFalse($this->clocked($v, 1763550301)->verifySignature('1591', 's', $body, $this->sig('raw', '1591', $body), self::TS, self::DID));
         $this->expectException(\InvalidArgumentException::class);
         $v->withTolerance(0);
     }
