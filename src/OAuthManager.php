@@ -19,13 +19,39 @@ final class OAuthManager
     }
 
     /**
+     * Generates an unguessable value for the OAuth "state" parameter (64 hex characters).
+     * Store it in the user session before redirecting and check it with verifyState() on the callback.
+     */
+    public static function generateState(): string
+    {
+        return bin2hex(random_bytes(32));
+    }
+
+    /**
+     * Compares the state kept in the session with the one returned on the callback.
+     * Fail-closed: null or empty values never match. Call it before exchangeCodeForToken() or
+     * ShoperClient::authenticateOAuth(), and remove the state from the session afterwards so it is single-use.
+     */
+    public static function verifyState(?string $expected, ?string $received): bool
+    {
+        if ($expected === null || $expected === '' || $received === null || $received === '') {
+            return false;
+        }
+        return hash_equals($expected, $received);
+    }
+
+    /**
      * @param array<int, string> $scopes
+     * @param string|null $state Value from generateState(); appended as the "state" query parameter when not empty.
+     * @deprecated Shoper shops do not expose /admin/oauth/authorize. AppStore applications receive the
+     *             authorization code during an installation started by the shop. Will be removed in 1.0.
      */
     public function buildAuthorizationUrl(
         string $shopDomain,
         string $clientId,
         string $redirectUri,
-        array $scopes = []
+        array $scopes = [],
+        ?string $state = null
     ): string {
         $params = [
             'response_type' => 'code',
@@ -35,10 +61,15 @@ final class OAuthManager
         if (!empty($scopes)) {
             $params['scope'] = implode(' ', $scopes);
         }
+        if ($state !== null && $state !== '') {
+            $params['state'] = $state;
+        }
         return rtrim($shopDomain, '/') . '/admin/oauth/authorize?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
     }
 
     /**
+     * An application that starts the browser flow itself must call OAuthManager::verifyState() before this method.
+     *
      * @return array<string, mixed>
      * @throws InvalidAuthCodeException
      */
