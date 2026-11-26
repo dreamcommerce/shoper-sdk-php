@@ -60,7 +60,15 @@ if (!$verifier->verifyFromGlobals(file_get_contents('php://input'))) {
     exit;
 }
 ```
-`verifyFromGlobals()` reads the `X-Webhook-Id`, `X-Shop-License` and `X-Webhook-SHA1` headers; `verifyFromPsr7($request)` does the same for a PSR-7 request. See `examples/03-webhook-verification.php`.
+`verifyFromGlobals()` reads the `X-Webhook-Id`, `X-Shop-License`, `X-Webhook-Signature`, `X-Webhook-Timestamp`, `X-Webhook-Delivery-Id` and `X-Webhook-SHA1` headers; `verifyFromPsr7($request)` does the same for a PSR-7 request; `verifyHeaders($headers, $rawBody)` takes any header map (case-insensitive). See `examples/03-webhook-verification.php`.
+
+Notes:
+- `appstoreSecret` and `webhookSecret` are server-side secrets. Anyone holding both can sign webhooks for every shop of the application; rotate them in App Store if they leak.
+- `WebhookVerifier::fromShopSecret($secret)` verifies with a per-installation secret (or the raw secret of a webhook created through `POST /webapi/rest/webhooks`) instead of the application master keys.
+- When `X-Webhook-Signature: sha256=<hmac>` is present it is verified on its own (HMAC-SHA256 over `timestamp.deliveryId.id:body`, no fallback to SHA1) and the timestamp must be within 300 seconds of the server clock (keep NTP running or use `withTolerance()`).
+- `withReplayGuard(fn (string $deliveryId, int $timestamp): bool)` rejects repeated deliveries (keep seen delivery ids in a store shared across requests, such as cache or DB, at least until `$timestamp` plus the tolerance); `withShopGuard(fn (string $shopHash): bool)` rejects shops where the application is not installed.
+- Legacy `X-Webhook-SHA1` is still accepted when `X-Webhook-Signature` is absent. It has no timestamp or delivery id, so the time window and the replay guard do not apply to it; call `withoutLegacySha1()` to reject it once your integration receives the new header.
+- Empty signatures, ids or key material are always rejected.
 
 ## All 74 sub-clients
 
